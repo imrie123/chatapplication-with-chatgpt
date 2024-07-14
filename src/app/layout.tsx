@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { AppProvider} from "./context/AppContext";
+import { useContext } from "react";
+
 
 export const metadata: Metadata = {
   title: "ChatApplication-with-ChatGPT",
@@ -13,7 +16,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <body>{children}</body>
+      <body>
+        <AppProvider>{children}</AppProvider>
+      </body>
     </html>
   );
 }
