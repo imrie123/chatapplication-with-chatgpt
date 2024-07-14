@@ -21,7 +21,7 @@ const Chat = () => {
     apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY,
     dangerouslyAllowBrowser: true,
   });
-  const { selectedRoom } = useAppContext();
+  const { selectedRoom,selectRoomName } = useAppContext();
   const [inputMessage, setInputMessage] = useState<string>("");
   interface Message {
     text: string;
@@ -86,7 +86,7 @@ const Chat = () => {
   }, [selectedRoom]);
   return (
     <div className="bg-gray-500 h-full p-4 flex flex-col">
-      <h1 className="text-2xl text-white font-semibold mb-4">Room1</h1>
+      <h1 className="text-2xl text-white font-semibold mb-4">{selectRoomName}</h1>
       <div className="flex-grow overflow-y-auto mb-4">
         {messages.map((message, index) => (
           <div

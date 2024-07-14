@@ -21,10 +21,11 @@ type Room = {
 };
 
 const Sidebar = () => {
-  const { user, userId, setSelectedRoom } = useAppContext();
+  const { user, userId, setSelectedRoom, setSelectRoomName } = useAppContext();
   const [rooms, setRooms] = useState<Room[]>([]);
-  const selectRoom = (roomId: string) => {
+  const selectRoom = (roomId: string, roomName: string) => {
     setSelectedRoom(roomId);
+    setSelectRoomName(roomName);
   };
 
   const handleLogout = () => {
@@ -85,7 +86,7 @@ const Sidebar = () => {
             <li
               key={room.id}
               className="cursor-pointer border-b p-4 text-slate-100 hover:bg-slate-700"
-              onClick={() => selectRoom(room.id)}
+              onClick={() => selectRoom(room.id, room.name)}
             >
               {room.name}
             </li>
