@@ -10,7 +10,8 @@ import {
   onSnapshot,
   where,
   addDoc,
-  serverTimestamp,
+  Timestamp,
+
 } from "firebase/firestore";
 import { useAppContext } from "../context/AppContext";
 
@@ -40,7 +41,7 @@ const Sidebar = () => {
       await addDoc(newRoomRef, {
         name: roomName,
         userId: userId,
-        createdAt: serverTimestamp(),
+        createdAt: Timestamp.now(),
       });
     }
   };

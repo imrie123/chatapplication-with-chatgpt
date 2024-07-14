@@ -3,6 +3,7 @@ import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/navigation";
+import { FirebaseError } from "firebase/app";
 import Link from "next/link";
 
 import { auth } from "@/app/firebase";
@@ -31,12 +32,12 @@ const Register = () => {
       router.push("/auth/login");
       console.log(user);
     } catch (error) {
-      if (error.code === "auth/email-already-in-use") {
-        alert("このメールアドレスはすでに使用されています。");
+      if ((error as FirebaseError).code === "auth/email-already-in-use") {
+          alert("このメールアドレスはすでに使用されています。");
       } else {
-        console.log("エラーが発生しました。");
+          console.error("エラーが発生しました: ", error);
       }
-    }
+  }
   };
 
   return (
