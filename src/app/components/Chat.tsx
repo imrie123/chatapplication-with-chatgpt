@@ -11,7 +11,7 @@ import {
   query,
   orderBy,
   QuerySnapshot,
-  DocmentData,
+  DocumentData,
 } from "firebase/firestore";
 import OpenAI from "openai";
 import LoadingIcons from "react-loading-icons";
@@ -37,11 +37,12 @@ const Chat = () => {
     createdAt: serverTimestamp(),
   };
   const sendMessage = async () => {
+    if (!inputMessage.trim() || !selectedRoom) return;
     if (!inputMessage.trim()) return;
     const messageCollectionRef = collection(
       db,
       "rooms",
-      selectedRoom,
+      selectedRoom || 'default-room',
       "messages"
     );
     await addDoc(messageCollectionRef, messageData);
@@ -70,8 +71,8 @@ const Chat = () => {
 
         const unsubscribe = onSnapshot(
           q,
-          (snapshot: QuerySnapshot<DocmentData>) => {
-            const newMessages = snapshot.docs.map((doc: DocmentData) =>
+          (snapshot: QuerySnapshot<DocumentData>) => {
+            const newMessages = snapshot.docs.map((doc: DocumentData) =>
               doc.data()
             );
             setMessages(newMessages);
