@@ -2,13 +2,15 @@
 
 import React, { useEffect, useState } from "react";
 import { BiLogOut } from "react-icons/bi";
-import { db } from "@/app/firebase";
+import { auth, db } from "@/app/firebase";
 import {
   collection,
   query,
   orderBy,
   onSnapshot,
   where,
+  addDoc,
+  serverTimestamp,
 } from "firebase/firestore";
 import { useAppContext } from "../context/AppContext";
 
@@ -24,6 +26,24 @@ const Sidebar = () => {
   const selectRoom = (roomId: string) => {
     setSelectedRoom(roomId);
   };
+
+  const handleLogout = () => {
+    auth.signOut();
+    console.log("logout");
+  };
+
+  const addnewRoom = async () => {
+    const roomName = prompt("ルーム名を入力してください");
+    if (roomName) {
+      const newRoomRef = collection(db, "rooms");
+      await addDoc(newRoomRef, {
+        name: roomName,
+        userId: userId,
+        createdAt: serverTimestamp(),
+      });
+    }
+  };
+
   useEffect(() => {
     if (user) {
       const fetchRooms = async () => {
@@ -53,7 +73,10 @@ const Sidebar = () => {
   return (
     <div className="bg-custom-blue h-full overflow-y-auto px-5 flex-col">
       <div className="flex-grow">
-        <div className="cursor-pointer flex justify-evenly items-center border mt-2 rounded-md hover:bg-blue-800 duration-150">
+        <div
+          onClick={addnewRoom}
+          className="cursor-pointer flex justify-evenly items-center border mt-2 rounded-md hover:bg-blue-800 duration-150"
+        >
           <span className="text-white p-4 text-2xl">+</span>
           <h1 className="text-white text-xl font-semibold p-4">New Chat</h1>
         </div>
@@ -69,7 +92,10 @@ const Sidebar = () => {
           ))}
         </ul>
       </div>
-      <div className="text-lg flex items-center justify-evenly mb-2 cursor-pointer p-4 text-slate-100 hover:bg-slate-700 duration-150">
+      <div
+        onClick={handleLogout}
+        className="text-lg flex items-center justify-evenly mb-2 cursor-pointer p-4 text-slate-100 hover:bg-slate-700 duration-150"
+      >
         <BiLogOut />
         <span>ログアウト</span>
       </div>

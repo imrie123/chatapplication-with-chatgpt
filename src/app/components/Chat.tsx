@@ -14,6 +14,7 @@ import {
   DocmentData,
 } from "firebase/firestore";
 import OpenAI from "openai";
+import LoadingIcons from "react-loading-icons";
 
 const Chat = () => {
   const openai = new OpenAI({
@@ -28,6 +29,8 @@ const Chat = () => {
   }
 
   const [messages, setMessages] = useState<Message[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const messageData = {
     text: inputMessage,
     sender: "user",
@@ -38,15 +41,17 @@ const Chat = () => {
     const messageCollectionRef = collection(
       db,
       "rooms",
-      "isNT3WnxIxM4PgR4c7c6",
+      selectedRoom,
       "messages"
-    ); 
+    );
     await addDoc(messageCollectionRef, messageData);
     setInputMessage("");
+    setIsLoading(true);
     const gpt3Response = await openai.chat.completions.create({
       messages: [{ role: "user", content: inputMessage }],
       model: "gpt-3.5-turbo",
     });
+    setIsLoading(false);
     const botResponse = gpt3Response.choices[0].message.content;
     await addDoc(messageCollectionRef, {
       text: botResponse,
@@ -99,6 +104,7 @@ const Chat = () => {
             </div>
           </div>
         ))}
+        {isLoading && <LoadingIcons.TailSpin />}
       </div>
       <div className="flex-shrink-0 relative">
         <input
@@ -106,6 +112,10 @@ const Chat = () => {
           placeholder="Send a Message"
           className="border-2 rounded w-full pr-10 focus:outline p-2"
           onChange={(e) => setInputMessage(e.target.value)}
+          value={inputMessage}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") sendMessage();
+          }}
         />
         <button
           className="absolute inset-y-0 right-4 flex items-center"
